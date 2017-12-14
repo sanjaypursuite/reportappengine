@@ -1,5 +1,4 @@
 cron:
 - description: daily summary job
-  url: /login_report
-  target:
-  schedule: every 24 hours
+  url: /
+  schedule: every 6 hours
