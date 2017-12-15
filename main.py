@@ -28,10 +28,7 @@ class MainPage(webapp2.RequestHandler):
           }
    }
 
-   query_response = query_request.insert(
-       projectId='indigo-lotus-154020', 
-       body=query_config).
-       execute() 
+   query_response = query_request.insert(projectId='indigo-lotus-154020', body=query_config).execute() 
 
    return query_response
 
