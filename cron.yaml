@@ -1,4 +1,4 @@
 cron:
 - description: daily summary job
-  url: /
+  url: /cronscript
   schedule: every 6 hours

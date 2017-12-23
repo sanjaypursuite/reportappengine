@@ -1,10 +1,7 @@
-from __future__ import absolute_import
-import sys
 import webapp2
-import os
 #from google.cloud import bigquery
 
-class MainPage(webapp2.RequestHandler):
+class ReportPage(webapp2.RequestHandler):
 	def get(self):
 #	client = bigquery.Client('indigo-lotus-154020')
 #		query = '(SELECT *FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY tb1.user_id ORDER BY tb1.timestamp DESC) AS RowNo FROM `indigo-lotus-154020.nodejs.login` tb1) x WHERE x.RowNo = 1)'
@@ -19,9 +16,10 @@ class MainPage(webapp2.RequestHandler):
 #		res = query_job.result()
 #
 		self.response.headers['Content-Type'] = 'text/plain'
-	        self.response.write('Hello, Bro!')
+	        self.response.write('Hello, in ReportPage function!')
+		#return res
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/report', ReportPage),
 ], debug=True)
 

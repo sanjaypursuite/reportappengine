@@ -1,8 +1,11 @@
-
 runtime: python27
 api_version: 1
-threadsafe: true
+threadsafe: no
 
 handlers:
+
+- url: /cronscript
+  script: cronscript.py
+
 - url: /.*
   script: main.app
