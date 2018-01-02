@@ -1,27 +1,44 @@
-from __future__ import absolute_import
-import sys
-import webapp2
+import json
 import os
-#from google.cloud import bigquery
+
+import googleapiclient.discovery
+from oauth2client.contrib.appengine import OAuth2DecoratorFromClientSecrets
+import webapp2
+
+
+# The project id whose datasets you'd like to list
+PROJECTID = 'indigo-lotus-154020'
+
+# Create the method decorator for oauth.
+decorator = OAuth2DecoratorFromClientSecrets(
+    os.path.join(os.path.dirname(__file__), 'client_secrets.json'),
+    scope='https://www.googleapis.com/auth/bigquery')
+
+# Create the bigquery api client
+service = googleapiclient.discovery.build('bigquery', 'v2')
+
 
 class MainPage(webapp2.RequestHandler):
-	def get(self):
-#	client = bigquery.Client('indigo-lotus-154020')
-#		query = '(SELECT *FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY tb1.user_id ORDER BY tb1.timestamp DESC) AS RowNo FROM `indigo-lotus-154020.nodejs.login` tb1) x WHERE x.RowNo = 1)'
-#		job_config = bigquery.QueryJobConfig()
-#		job_config.allow_large_results = True
-#		dest_dataset_ref = client.dataset('report')
-#		dest_table_ref = dest_dataset_ref.table('login_temp')
-#		job_config.destination = dest_table_ref
-#		# Allow the results table to be overwritten.
-#		job_config.write_disposition = 'WRITE_TRUNCATE'
-#		query_job = client.query(query, job_config=job_config)
-#		res = query_job.result()
-#
-		self.response.headers['Content-Type'] = 'text/plain'
-	        self.response.write('Hello, Bro!')
+
+    # oauth_required ensures that the user goes through the OAuth2
+    # authorization flow before reaching this handler.
+    @decorator.oauth_required
+    def get(self):
+        # This is an httplib2.Http instance that is signed with the user's
+        # credentials. This allows you to access the BigQuery API on behalf
+        # of the user.
+        http = decorator.http()
+
+        response = service.datasets().list(projectId=PROJECTID).execute(http)
+
+        self.response.out.write('<h3>Datasets.list raw response:</h3>')
+        self.response.out.write('<pre>%s</pre>' %
+                                json.dumps(response, sort_keys=True, indent=4,
+                                           separators=(',', ': ')))
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    # Create the endpoint to receive oauth flow callbacks
+    (decorator.callback_path, decorator.callback_handler())
 ], debug=True)
-
