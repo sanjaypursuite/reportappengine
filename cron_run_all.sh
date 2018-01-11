@@ -1,0 +1,6 @@
+
+python cron_quotation_updated_report.py 
+python cron_po_updated_report.py
+python cron_rfq_updated_report.py
+python cron_buyer_account_updated.py
+python cron_seller_account_updated.py
